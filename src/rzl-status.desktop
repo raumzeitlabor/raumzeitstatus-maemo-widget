@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=RaumZeitLabor status
+Comment=Displays whether the RaumZeitLabor is open
+Type=qt
+X-Path=raumzeitlabor-status
+X-Multiple-Instances=false
+X-home-applet-minwidth=105
+X-home-applet-minheight=90
+Name[en_US]=RaumZeitLabor status
+Name[de_DE]=RaumZeitLabor-Raumstatus
