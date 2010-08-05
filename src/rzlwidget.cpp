@@ -101,17 +101,17 @@ void RZLWidget::setConnection(QString bearer) {
 void RZLWidget::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
 
+    QRect r = rect();
     QPainter p(this);
     p.setBrush(QColor(0, 0, 0, 150));
     p.setPen(Qt::NoPen);
     p.drawRoundedRect(rect(), 15, 15);
+    QRect iconrect = QRect(r.x(), 10, r.width(), 50);
 
-    icon->paint(&p, rect());
+    icon->paint(&p, iconrect);
 
     p.setPen(QPen(Qt::white));
-    p.drawText(rect(), Qt::AlignHCenter, "rzl");
-    QRect r = rect();
-    QRect lu_rect = QRect(r.x(), 75, r.width(), 30);
+    QRect lu_rect = QRect(r.x(), 55, r.width(), 30);
 
     p.drawText(lu_rect, Qt::AlignHCenter, lastUpdated);
 }

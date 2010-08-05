@@ -45,11 +45,11 @@ public:
     RZLWidget(QWidget *parent = 0);
 
     QSize minimumSizeHint() const {
-        return QSize(90, 105);
+        return QSize(90, 90);
     }
 
     QSize sizeHint() const {
-        return QSize(90, 105);
+        return QSize(90, 90);
     }
 
     void setConnection(QString bearer);
