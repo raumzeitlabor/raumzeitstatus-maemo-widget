@@ -1,3 +1,9 @@
+raumzeitlabor-status-widget (1.2-1) unstable; urgency=low
+
+  * change URL to the new, stable one
+
+ -- Michael Stapelberg <michael@stapelberg.de>  Fri, 06 Aug 2010 01:03:05 +0200
+
 raumzeitlabor-status-widget (1.1-2) unstable; urgency=low
 
   * debian: kill hildon-home in postinst

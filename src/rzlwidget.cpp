@@ -158,7 +158,7 @@ void RZLWidget::update() {
 
     /* Send a new HTTP request to get the status */
     QNetworkRequest request;
-    request.setUrl(QUrl("http://scytale.name/files/tmp/rzlstatus.txt"));
+    request.setUrl(QUrl("http://status.raumzeitlabor.de/api/simple"));
     QNetworkReply *reply = network->get(request);
     connect(reply, SIGNAL(finished()), this, SLOT(req_finished()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
