@@ -132,6 +132,9 @@ void RZLWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void RZLWidget::update() {
+    lastUpdated = "...";
+    repaint();
+
     /* Send a new HTTP request to get the status */
     QNetworkRequest request;
     request.setUrl(QUrl("http://scytale.name/files/tmp/rzlstatus.txt"));
