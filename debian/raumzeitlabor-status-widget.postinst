@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+# kill hildon-home to ensure that the new plugin file is properly loaded. this
+# is safe as per https://bugs.maemo.org/show_bug.cgi?id=8586 (device reboots
+# only after 10 hildon-home crashes within 60 seconds)
+killall hildon-home
+
+#DEBHELPER#
