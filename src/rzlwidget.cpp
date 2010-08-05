@@ -139,11 +139,6 @@ void RZLWidget::paintEvent(QPaintEvent *event) {
 void RZLWidget::mouseReleaseEvent(QMouseEvent *event) {
     Q_UNUSED(event);
 
-    /* if the timer is not active, we don't have an internet connection, so
-     * cancel this handler */
-    if (!timer->isActive())
-        return;
-
     update();
 }
 
