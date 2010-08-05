@@ -1,5 +1,5 @@
 Source: raumzeitlabor-status-widget
-Section: libs
+Section: user/desktop
 Priority: optional
 Maintainer: Michael Stapelberg <michael@stapelberg.de>
 Build-Depends: libqt4-dev (>= 4.6.1), libhildon1-dev, libhildondesktop1-dev
@@ -7,7 +7,7 @@ Standards-Version: 3.7.3
 
 Package: raumzeitlabor-status-widget
 Architecture: any
-Section: devel
+Section: user/desktop
 Depends: libhildondesktop1, qt4-homescreen-loader
 Description: RaumZeitLabor status widget
  Shows whether the german hackerspace RaumZeitLabor is open at the moment.
