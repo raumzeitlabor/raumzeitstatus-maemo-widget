@@ -144,8 +144,13 @@ void RZLWidget::update() {
 void RZLWidget::req_finished() {
     QNetworkReply *reply = (QNetworkReply*)sender();
     QByteArray answer = reply->readAll();
+    QString status = QString(answer).trimmed();
 
-    icon = (QString(answer).trimmed() == "1" ? icon_auf : icon_zu);
+    if (status == "1")
+        icon = icon_auf;
+    else if (status == "0")
+        icon = icon_zu;
+    else icon = icon_unklar;
     lastUpdated = QDateTime::currentDateTime().toString("hh:mm");
     repaint();
 
