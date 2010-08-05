@@ -1,3 +1,14 @@
+raumzeitlabor-status-widget (1.1-1) unstable; urgency=low
+
+  * update the status even if no internet connection
+  * update to the full 15 (or 30) minutes
+  * when updating, display ... instead of the last updated time
+  * don't display 'rzl' caption anymore (it's in the image now)
+  * display 'unklar.png' when status is anything but 1 or 0
+  * change section to user/desktop to get the package installed by application manager
+
+ -- Michael Stapelberg <michael@stapelberg.de>  Thu, 05 Aug 2010 23:21:03 +0200
+
 raumzeitlabor-status-widget (1.0-1) unstable; urgency=low
 
   * Initial release
