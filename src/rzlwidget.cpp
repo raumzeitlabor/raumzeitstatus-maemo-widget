@@ -48,7 +48,7 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
     /* Timer will be triggered in setConnection() as soon as the connection
      * status is known */
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(trigger_update()));
 
     /* Setup stuff for the conic library */
     DBusConnection *conn;
@@ -86,12 +86,28 @@ void RZLWidget::setConnection(QString bearer) {
     /* on wireless, update every 15 minutes */
     if (bearer == "WLAN_INFRA") {
         timer->stop();
-        timer->start(15 * 60 * 1000);
+        interval = 15 * 60 * 1000;
+
+        QTime next = QTime::currentTime();
+        int min;
+        if (next.minute() < 45 && next.minute() >= 30)
+                min = 45;
+        else if (next.minute() < 30 && next.minute() >= 15)
+                min = 30;
+        else if (next.minute() < 15 && next.minute() >= 0)
+                min = 15;
+        else min = 0;
+        next.setHMS(next.hour(), min, 0);
+        timer->start(QTime::currentTime().msecsTo(next));
     }
     else {
         /* on data connection, update every 30 minutes */
         timer->stop();
-        timer->start(30 * 60 * 1000);
+        interval = 30 * 60 * 1000;
+
+        QTime next = QTime::currentTime();
+        next.setHMS(next.hour(), (next.minute() >= 30 ? 0 : 30), 0);
+        timer->start(QTime::currentTime().msecsTo(next));
     }
 
     /* also trigger an immediate update */
@@ -127,6 +143,16 @@ void RZLWidget::mouseReleaseEvent(QMouseEvent *event) {
      * cancel this handler */
     if (!timer->isActive())
         return;
+
+    update();
+}
+
+void RZLWidget::trigger_update() {
+    if (interval > 0) {
+        timer->stop();
+        timer->start(interval);
+        interval = 0;
+    }
 
     update();
 }

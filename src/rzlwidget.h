@@ -39,6 +39,7 @@ private:
     QIcon *icon;
     QString text;
     QString lastUpdated;
+    int interval;
 
 public:
 
@@ -53,9 +54,10 @@ public:
     }
 
     void setConnection(QString bearer);
+    void update();
 
 public slots:
-    void update();
+    void trigger_update();
     void req_finished();
     void req_error(QNetworkReply::NetworkError err);
 
