@@ -78,8 +78,6 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
 void RZLWidget::setConnection(QString bearer) {
     if (bearer == "offline") {
         timer->stop();
-        icon = icon_unklar;
-        repaint();
         return;
     }
 
