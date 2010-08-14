@@ -32,11 +32,14 @@ class RZLWidget : public QWidget
 
 private:
     QNetworkAccessManager *network;
+    ConIcConnection *connection;
     QTimer *timer;
+    QTimer *periodic_bearer;
     QIcon *icon_unklar;
     QIcon *icon_auf;
     QIcon *icon_zu;
     QIcon *icon;
+    QString lastBearer;
     QString text;
     QString lastUpdated;
     int interval;
@@ -58,6 +61,7 @@ public:
 
 public slots:
     void trigger_update();
+    void trigger_periodic();
     void req_finished();
     void req_error(QNetworkReply::NetworkError err);
 

@@ -9,6 +9,9 @@
  * See LICENSE for licensing information
  *
  */
+#define DEBUG 1
+#define OSSOLOG_SYSLOG 1
+#include <osso-log.h>
 
 #include <QDateTime>
 #include "rzlwidget.h"
@@ -50,6 +53,10 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(trigger_update()));
 
+    periodic_bearer = new QTimer(this);
+    periodic_bearer->start(60 * 1000);
+    connect(periodic_bearer, SIGNAL(timeout()), this, SLOT(trigger_periodic()));
+
     /* Setup stuff for the conic library */
     DBusConnection *conn;
     DBusError err;
@@ -62,7 +69,7 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
     dbus_connection_setup_with_g_main(conn, NULL);
 
     /* We want to get called on connection events */
-    ConIcConnection *connection = con_ic_connection_new();
+    connection = con_ic_connection_new();
     g_signal_connect(G_OBJECT(connection), "connection-event", G_CALLBACK(connection_change), this);
     g_object_set(G_OBJECT(connection), "automatic-connection-events", TRUE, NULL);
 
@@ -76,8 +83,17 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
  *
  */
 void RZLWidget::setConnection(QString bearer) {
+    if (lastBearer == bearer)
+        return;
+    ULOG_INFO_L("new bearer: %s", (char*)bearer.toAscii().data());
+    lastBearer = bearer;
+
     if (bearer == "offline") {
         timer->stop();
+        if (lastUpdated == "...") {
+            lastUpdated = QString("(%1)").arg(QDateTime::currentDateTime().toString("hh:mm"));
+            repaint();
+        }
         return;
     }
 
@@ -148,6 +164,15 @@ void RZLWidget::mouseReleaseEvent(QMouseEvent *event) {
     Q_UNUSED(event);
 
     update();
+}
+
+/*
+ * We periodically get the bearer because icd sometimes fails to provide us
+ * with bearer changes (or mixes up the order). Meh.
+ *
+ */
+void RZLWidget::trigger_periodic() {
+    con_ic_connection_connect(connection, CON_IC_CONNECT_FLAG_NONE);
 }
 
 void RZLWidget::trigger_update() {
