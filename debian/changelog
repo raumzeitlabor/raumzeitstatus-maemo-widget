@@ -1,3 +1,9 @@
+raumzeitlabor-status-widget (1.3-2) fremantle; urgency=low
+
+  * debian: require libosso-dev (necessary for osso-log.h)
+
+ -- Michael Stapelberg <michael@stapelberg.de>  Sun, 15 Aug 2010 13:11:15 +0200
+
 raumzeitlabor-status-widget (1.3-1) fremantle; urgency=low
 
   * Periodically get the bearer, set lastUpdated when offline, add debug log
