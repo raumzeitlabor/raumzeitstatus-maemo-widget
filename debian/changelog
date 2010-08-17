@@ -1,3 +1,9 @@
+raumzeitlabor-status-widget (1.4-1) fremantle; urgency=low
+
+  * set no-cache headers
+
+ -- Michael Stapelberg <michael@stapelberg.de>  Tue, 17 Aug 2010 21:34:43 +0200
+
 raumzeitlabor-status-widget (1.3-2) fremantle; urgency=low
 
   * debian: require libosso-dev (necessary for osso-log.h)
