@@ -17,9 +17,8 @@
 #include <QtGui/qpainter.h>
 #include <QTimer>
 #include <QIcon>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+
+#include <curl/curl.h>
 
 /* for conic (connection status) we need glib */
 #include <glib-object.h>
@@ -31,7 +30,8 @@ class RZLWidget : public QWidget
     Q_OBJECT
 
 private:
-    QNetworkAccessManager *network;
+    CURL *hdl;
+    char errbuf[CURL_ERROR_SIZE];
     ConIcConnection *connection;
     QTimer *timer;
     QTimer *periodic_bearer;
@@ -56,14 +56,14 @@ public:
         return QSize(90, 90);
     }
 
+    void receive_status(QString status);
+    void req_error();
     void setConnection(QString bearer);
     void update();
 
 public slots:
     void trigger_update();
     void trigger_periodic();
-    void req_finished();
-    void req_error(QNetworkReply::NetworkError err);
 
 protected:
     void paintEvent(QPaintEvent *event);

@@ -8,6 +8,8 @@ CONFIG += link_pkgconfig
 PKGCONFIG += glib-2.0 conic
 TARGET = raumzeitlabor-status
 
+QMAKE_LFLAGS += -lcurl
+
 include(../qmaemo5homescreenadaptor/qmaemo5homescreenadaptor.pri)
 
 desktop.path = /usr/share/applications/hildon-home

@@ -36,6 +36,17 @@ static void connection_change(ConIcConnection *connection, ConIcConnectionEvent 
     }
 }
 
+static size_t recv_status(void *buffer, size_t size, size_t nmemb, void *userp) {
+    RZLWidget *widget = (RZLWidget*)userp;
+    const char *buf = (const char*)buffer;
+
+    if ((size * nmemb) > 0)
+        widget->receive_status(QString(buf[0]));
+    else widget->req_error();
+
+    return size * nmemb;
+}
+
 RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -46,7 +57,17 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
 
     lastUpdated = "?";
 
-    network = new QNetworkAccessManager(this);
+    hdl = curl_easy_init();
+
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "Pragma: no-cache");
+    headers = curl_slist_append(headers, "Cache-Control: no-cache");
+
+    curl_easy_setopt(hdl, CURLOPT_URL, "http://status.raumzeitlabor.de/api/simple");
+    curl_easy_setopt(hdl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(hdl, CURLOPT_WRITEFUNCTION, recv_status);
+    curl_easy_setopt(hdl, CURLOPT_WRITEDATA, this);
+    curl_easy_setopt(hdl, CURLOPT_ERRORBUFFER, errbuf);
 
     /* Timer will be triggered in setConnection() as soon as the connection
      * status is known */
@@ -190,21 +211,15 @@ void RZLWidget::update() {
     repaint();
 
     /* Send a new HTTP request to get the status */
-    QNetworkRequest request;
-    request.setRawHeader("Pragma", "no-cache");
-    request.setRawHeader("Cache-Control", "no-cache");
-    request.setUrl(QUrl("http://status.raumzeitlabor.de/api/simple"));
-    QNetworkReply *reply = network->get(request);
-    connect(reply, SIGNAL(finished()), this, SLOT(req_finished()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(req_error(QNetworkReply::NetworkError)));
+    CURLcode success = curl_easy_perform(hdl);
+    if (success == 0)
+        return;
+
+    ULOG_ERR_L("Error updating status: %s", errbuf);
+    req_error();
 }
 
-void RZLWidget::req_finished() {
-    QNetworkReply *reply = (QNetworkReply*)sender();
-    QByteArray answer = reply->readAll();
-    QString status = QString(answer).trimmed();
-
+void RZLWidget::receive_status(QString status) {
     if (status == "1")
         icon = icon_auf;
     else if (status == "0")
@@ -212,20 +227,10 @@ void RZLWidget::req_finished() {
     else icon = icon_unklar;
     lastUpdated = QDateTime::currentDateTime().toString("hh:mm");
     repaint();
-
-    reply->deleteLater();
 }
 
-void RZLWidget::req_error(QNetworkReply::NetworkError err) {
-    Q_UNUSED(err);
-
-    QNetworkReply *reply = (QNetworkReply*)sender();
-    /* disconnect all signals to prevent finished() from getting called with an
-     * empty reply */
-    reply->disconnect();
+void RZLWidget::req_error() {
     icon = icon_unklar;
     lastUpdated = QDateTime::currentDateTime().toString("hh:mm");
     repaint();
-
-    reply->deleteLater();
 }
