@@ -1,3 +1,10 @@
+raumzeitlabor-status-widget (1.5-1) fremantle; urgency=low
+
+  * Bugfix: Don’t create a connection every minute
+  * Switch to libcurl instead of QNetwork
+
+ -- Michael Stapelberg <michael@stapelberg.de>  Wed, 25 Aug 2010 23:45:10 +0200
+
 raumzeitlabor-status-widget (1.4-1) fremantle; urgency=low
 
   * set no-cache headers

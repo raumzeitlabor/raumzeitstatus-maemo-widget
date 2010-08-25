@@ -2,7 +2,7 @@ Source: raumzeitlabor-status-widget
 Section: user/desktop
 Priority: optional
 Maintainer: Michael Stapelberg <michael@stapelberg.de>
-Build-Depends: libqt4-dev (>= 4.6.1), libhildon1-dev, libhildondesktop1-dev, libconic0-dev, libdbus-glib-1-dev, libglib2.0-dev, libosso-dev
+Build-Depends: libqt4-dev (>= 4.6.1), libhildon1-dev, libhildondesktop1-dev, libconic0-dev, libdbus-glib-1-dev, libglib2.0-dev, libosso-dev, libcurl3-dev
 Standards-Version: 3.7.3
 
 Package: raumzeitlabor-status-widget
