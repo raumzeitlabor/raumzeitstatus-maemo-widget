@@ -16,6 +16,12 @@
 #include <QDateTime>
 #include "rzlwidget.h"
 
+/*
+ * This signal will be received from icd when the connection status changes.
+ * Unfortunately, it is not really accurate (when switching from GPRS to
+ * wireless for example).
+ *
+ */
 static void connection_change(ConIcConnection *connection, ConIcConnectionEvent *event, gpointer user_data) {
     Q_UNUSED(connection);
     RZLWidget *w = (RZLWidget*)user_data;
@@ -34,6 +40,22 @@ static void connection_change(ConIcConnection *connection, ConIcConnectionEvent 
         default:
             qDebug("Unknown connection status received");
     }
+}
+
+/*
+ * This signal will be requested periodically (see the timer below). It is used
+ * as a safe-guard for the problems described above in the connection_change
+ * event.
+ *
+ */
+static void connection_statistics(ConIcConnection *connection, ConIcStatisticsEvent *event, gpointer user_data) {
+    Q_UNUSED(connection);
+    RZLWidget *w = (RZLWidget*)user_data;
+
+    /* If the active time is 0, we are offline (bearer is still set) */
+    if (con_ic_statistics_event_get_time_active(event) == 0)
+        w->setConnection("offline");
+    else w->setConnection(QString(con_ic_event_get_bearer_type(CON_IC_EVENT(event))));
 }
 
 static size_t recv_status(void *buffer, size_t size, size_t nmemb, void *userp) {
@@ -94,7 +116,9 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
     g_signal_connect(G_OBJECT(connection), "connection-event", G_CALLBACK(connection_change), this);
     g_object_set(G_OBJECT(connection), "automatic-connection-events", TRUE, NULL);
 
-    con_ic_connection_connect(connection, CON_IC_CONNECT_FLAG_NONE);
+    /* ConIcConnection object named "connection" has already been created */
+    g_signal_connect(G_OBJECT(connection), "statistics", G_CALLBACK(connection_statistics), this);
+    con_ic_connection_statistics(connection, NULL);
 }
 
 /*
@@ -193,7 +217,7 @@ void RZLWidget::mouseReleaseEvent(QMouseEvent *event) {
  *
  */
 void RZLWidget::trigger_periodic() {
-    con_ic_connection_connect(connection, CON_IC_CONNECT_FLAG_NONE);
+    con_ic_connection_statistics(connection, NULL);
 }
 
 void RZLWidget::trigger_update() {
