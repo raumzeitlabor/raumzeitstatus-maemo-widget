@@ -90,6 +90,8 @@ RZLWidget::RZLWidget(QWidget *parent) : QWidget(parent) {
     curl_easy_setopt(hdl, CURLOPT_WRITEFUNCTION, recv_status);
     curl_easy_setopt(hdl, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(hdl, CURLOPT_ERRORBUFFER, errbuf);
+    /* set a timeout of 30 seconds */
+    curl_easy_setopt(hdl, CURLOPT_TIMEOUT, 30);
 
     /* Timer will be triggered in setConnection() as soon as the connection
      * status is known */
