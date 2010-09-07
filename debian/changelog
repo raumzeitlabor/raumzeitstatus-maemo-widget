@@ -1,3 +1,10 @@
+raumzeitlabor-status-widget (1.6-1) fremantle; urgency=low
+
+  * Bugfix: schedule next update correctly when it’s 23:xx
+  * curl: set timeout to 30 seconds
+
+ -- Michael Stapelberg <michael@stapelberg.de>  Tue, 07 Sep 2010 15:53:59 +0200
+
 raumzeitlabor-status-widget (1.5-1) fremantle; urgency=low
 
   * Bugfix: Don’t create a connection every minute
