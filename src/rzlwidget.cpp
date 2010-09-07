@@ -152,6 +152,8 @@ void RZLWidget::setConnection(QString bearer) {
         QTime next = QTime::currentTime();
         int min;
         int hr = next.hour();
+        int sec = 0;
+        int ms = 0;
         if (next.minute() < 45 && next.minute() >= 30)
             min = 45;
         else if (next.minute() < 30 && next.minute() >= 15)
@@ -159,10 +161,16 @@ void RZLWidget::setConnection(QString bearer) {
         else if (next.minute() < 15 && next.minute() >= 0)
             min = 15;
         else {
-            min = 0;
-            hr = (hr < 23 ? hr + 1 : 0);
+            if (hr == 23) {
+                min = 59;
+                sec = 59;
+                ms = 999;
+            } else {
+                min = 0;
+                hr = hr + 1;
+            }
         }
-        next.setHMS(hr, min, 0);
+        next.setHMS(hr, min, sec, ms);
         timer->start(QTime::currentTime().msecsTo(next));
     }
     else {
@@ -173,11 +181,19 @@ void RZLWidget::setConnection(QString bearer) {
         QTime next = QTime::currentTime();
         int min;
         int hr = next.hour();
+        int sec = 0;
+        int ms = 0;
         if (next.minute() >= 30) {
-            min = 0;
-            hr = (hr < 23 ? hr + 1 : 0);
+            if (hr == 23) {
+                min = 59;
+                sec = 59;
+                ms = 999;
+            } else {
+                min = 0;
+                hr = hr + 1;
+            }
         } else min = 30;
-        next.setHMS(hr, (next.minute() >= 30 ? 0 : 30), 0);
+        next.setHMS(hr, min, sec, hr);
         timer->start(QTime::currentTime().msecsTo(next));
     }
 
